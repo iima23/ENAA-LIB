@@ -1,0 +1,203 @@
+public class Main {
+    public static void main(String[] args) {
+        Library library = new Library();
+        Menu menu = new Menu(library);
+        menu.showMenu();
+    }
+}
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Library {
+    // list of books
+    public static ArrayList<Book> books = new ArrayList<>();
+    public ArrayList<Student> students = new ArrayList<>();
+
+    // display the list of students
+    public void displayStudents() {
+        for (Student student : students) {
+            System.out.println("Name: " + student.name);
+            System.out.println("Address: " + student.address);
+            System.out.println("ID:"+ student.ID);
+        }
+    }
+// display the list of books
+    public void displayBooks() {
+        for (Book book : books) {
+            System.out.println("Title: " + book.Title);
+            System.out.println("Author: " + book.Author);
+            System.out.println("ISBN: " + book.ISBN);
+            System.out.println("Publication: " + book.Publication);
+        }
+    }
+
+    public void addBook() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter Title:");
+        String Title = scanner.nextLine();
+        System.out.println("Enter Author:");
+        String Author = scanner.nextLine();
+        System.out.println("Enter ISBN:");
+        int ISBN = scanner.nextInt();
+        scanner.nextLine();
+        System.out.println("Enter Publication:");
+        int Publication = Integer.parseInt(scanner.nextLine());
+        Book book = new Book(Title, Author, ISBN, Publication, null);
+        books.add(book);
+        System.out.println("Book is added ");
+    }
+
+    public void removeBook() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("enter the title of the book to remove:");
+        String titleToRemove = scanner.nextLine();
+        Book bookToRemove = null;    //initialisation
+        for (Book book : books) {
+            if (book.Title.equalsIgnoreCase(titleToRemove)) // Use equalsIgnoreCase to ignore case
+            {
+                bookToRemove = book;
+                break;
+            }
+        }
+        if (bookToRemove != null) {
+            books.remove(bookToRemove);
+            System.out.println("Book '" + titleToRemove + "' is removed");
+        }
+        else {
+            System.out.println("Book with the title '" + titleToRemove + "' is removed .");
+        }
+    }
+
+    public void searchBook() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the title of the book to search:");
+        String titleToSearch = scanner.nextLine();
+        for (Book book : books) {
+            if (book.Title.equalsIgnoreCase(titleToSearch)) {
+                System.out.println("Title: " + book.Title);
+                System.out.println("Author: " + book.Author);
+                System.out.println("ISBN: " + book.ISBN);
+                System.out.println("Publication: " + book.Publication);
+            }
+        }
+        System.out.println("The book exists.");
+    }
+//// STUDENT BORROW A BOOK
+    public static void getBorrower(String title) {
+        for (Book book : books) {
+            if (book.Title.equalsIgnoreCase(title)) {
+                if (book.Borrower != null) {
+                    System.out.println("The book '" + title + "' is borrowed by: " + book.Borrower.name);
+                } else {
+                    System.out.println("The book '" + title + "' is not borrowed yet.");
+                    break;
+                }
+            }
+        }
+        System.out.println("The book is borrowed by a student.");
+    }
+}
+import java.util.ArrayList;
+import java.util.List;
+public class Student {
+    // Attributes
+    String name;
+    String address;
+    int ID;
+    List<Book> borrowedBooks;
+
+    // Constructor
+    public Student(String name, String address, int ID) {
+        this.name = name;
+        this.address = address;
+        this.ID = ID;
+        this.borrowedBooks = new ArrayList<>();
+    }
+}
+import java.util.Scanner;
+import java.lang.String;
+
+public class Book {
+    String Title;
+    String Author;
+    int ISBN;
+    int Publication;
+    Student Borrower;
+
+    public Book(String Title, String Author, int ISBN, int Publication, Student Borrower) {
+        this.Title = Title;
+        this.Author = Author;
+        this.ISBN = ISBN;
+        this.Publication = Publication;
+        this.Borrower = Borrower;
+    }
+    public static void modifyDetails(Scanner scanner) {
+        System.out.println("Enter the new title: ");
+        scanner.nextLine();
+        System.out.print("Enter the new author: ");
+        scanner.nextLine();
+        System.out.print("Enter the new ISBN: ");
+        scanner.nextInt();
+        System.out.print("Enter the new publication: ");
+        scanner.nextInt();
+        System.out.println("Details have been modified successfully.");
+    }
+} import java.util.Scanner;
+
+public class Menu {
+    public  Library library;
+
+    public Menu(Library library) {
+        this.library = library;
+    }
+
+    public void showMenu() {
+        Scanner scanner = new Scanner(System.in);
+        int choice;
+        do {
+            System.out.println("MENU:");
+            System.out.println("1. Display all books");
+            System.out.println("2. Display all students");
+            System.out.println("3. Add a book");
+            System.out.println("4. Remove a book");
+            System.out.println("5. Search for a book");
+            System.out.println("6.get borrower of the book");
+            System.out.println("7. Modify book details");
+            System.out.println("8. Exit");
+            System.out.print("Choose an option: ");
+            choice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (choice) {
+                case 1:
+                    library.displayBooks();
+                    break;
+                case 2:
+                    library.displayStudents();
+                    break;
+                case 3:
+                    library.addBook();
+                    break;
+                case 4:
+                    library.removeBook();
+                    break;
+                case 5:
+                    library.searchBook();
+                    break;
+                case 6:
+                    System.out.println("Enter the title of the book to get it as borrower:");
+                    String bookTitle = scanner.nextLine();
+                    Library.getBorrower(bookTitle);
+                    break;
+                case 7:
+                    Book.modifyDetails(scanner);
+                case 8:
+                    System.out.println("exit");
+                    break;
+                default:
+                    System.out.println("invalid.");
+            }
+        } while (choice != 8);
+        scanner.close();
+    }
+}
